@@ -65,3 +65,23 @@ if(is.complex(lambdas) == FALSE && lambdas[1] < 0 && lambdas[2] < 0){
   } else if(is.complex(lambdas) == TRUE && Re(lambdas[1]) < 0 && Re(lambdas[2]) < 0){
     print("Stable focus - system is oscillatory and stable.")
   }
+  
+  #y0 <- matrix(c(0, 3, 0, 1), ncol = 2, nrow = 2, byrow = TRUE)
+y0 <- c(3,1)
+y0 <- c(3.732051, 0.2679492)
+hill.flowField <- flowField(hill, xlim = c(0, 5), ylim = c(0, 6.7), parameters = c(2, 2, 20, 20, 1, 1, 5, 5), points = 19, add = FALSE)
+grid()
+hill.nullclines <- nullclines(hill, xlim = c(-1, 5), ylim = c(-1, 6.7), parameters = c(2, 2, 20, 20, 1, 1, 5, 5), points = 500, add.legend = FALSE)
+hill.traj <- trajectory(hill, y0 = y0, tlim = c(0,6.7), parameters = c(2, 2, 20, 20, 1, 1, 5, 5), system = "two.dim")
+hill.numericalSolution <- numericalSolution(hill, y0 = c(3,1), tlim = c(0,10), type = "one", parameters = c(2, 2, 20, 20, 1, 1, 5, 5), ylab = "x, y", ylim = c(0,10))
+
+## Example 4: A quadratic function
+model = function(x){
+  F1 <- (20/(1+x[2]^2)) - (5*x[1])
+  F2 <- (20/(1+x[1]^2)) - (5*x[2])
+  c(F1 = F1, F2 = F2)
+}
+ss = multiroot(f=model, start=c(3,1))
+print(ss)
+hill.stability.1 <- stability(hill, ystar= c(3.732,0.268), parameters = c(2, 2, 20, 20, 1, 1, 5, 5)) # ystar = s1, s2 for which stability analysis is performed
+#ystar should be solutions from rootSolve
