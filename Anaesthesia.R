@@ -25,14 +25,13 @@ ana = function(t, init, para){
   list(c(dM, dB, dL)) # function automatically returns dM, dB, dL as a list
 }
 
-# Give initial value
-init <- c(315, 0, 0) # mg
+# Give initial value - M(0), B(0), L(0) in mg
+init <- c(M = 315, B = 0, L = 0)
 
 # Give parameter values - e, c, delta - rates per hour
-#para <- c(0.5, 0.3, 0.4)
-para <- c(0.5, 0.3, 0.000001) # Part c: delta tends to 0
+para <- c(e = 0.5, c = 0.3, delta = 0.4)
 
-# Time range for solution
+# Time range for solution - in hours
 t <- seq(0, 24, 0.1)
 
 ## Part a
@@ -40,21 +39,49 @@ t <- seq(0, 24, 0.1)
 out <- ode(y = init, times = t, func = ana, parms = para)
 
 # Plotting solution for muscle
-x=out[,1]
-y=out[,2]
-plot(x, y, type = "l", xlab = "Time in hours", ylab = "M(t) in mg")
+plot(out[,1], out[,2], type = "l", xlab = "Time in hours", ylab = "M(t) in mg")
 
 # Plotting solution for blood
-x=out[,1]
-y=out[,3]
-plot(x, y, type = "l", xlab = "Time in hours", ylab = "B(t) in mg")
+plot(out[,1], out[,3], type = "l", xlab = "Time in hours", ylab = "B(t) in mg")
+
 ## Part b
-abline(v=1.4)
+# Time when half of injected amount into muscle goes to blood
+# i.e., B(t) = M(0)/2 so find t
+Bt = init[1]/2
 
-# Part c: Plotting solution for liver
-x=out[,1]
-y=out[,4]
-plot(x, y, type = "l", xlab = "Time in hours", ylab = "L(t) in mg")
+vals = out[,3] <= Bt # logical vector
+Bt_all = out[,3] # contains all values of B(t)
+Bt_all <- Bt_all[vals] # selects only those values of B(t) which are <= M(0)/2
 
-#Print summary
-print(out)
+Bt = max(Bt_all)
+entry = out[out[,3]==Bt,]
+
+abline(v = entry[1], col = "cyan") # v for vertical line
+text(3,3, paste("Time = ", entry[1]))
+
+# Part c: Plotting solution for liver - When delta tends to 0
+model2 = function(t, init, para2){
+  e = para2[1]
+  c = para2[2]
+  d = para2[3]
+  
+  M = init[1]
+  B = init[2]
+  L = init[3]
+  
+  dM = -e * M
+  dB = (e * M) - (c * B)
+  dL = (c * B) - (d * L)
+  
+  list(c(dM, dB, dL))
+}
+para2 = c(e = 0.5, c = 0.3, d = 0.000000000001) # e, c, d
+out2 = ode(t = t, y = init, func = model2, parms = para2)
+
+# Plot liver levels
+plot(out2[,1], out2[,4], xlab = "Time in hours", ylab = "L(t) in mg", type = "l")
+
+Lt = max(out2[,4])
+
+abline(h = Lt, col = "cyan") # v for vertical line
+text(10,10, paste("Anaesthesia in mg = ", Lt))
