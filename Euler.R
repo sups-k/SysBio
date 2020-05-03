@@ -39,5 +39,7 @@ t = seq(0, 20, 0.01)
 out <- ode(y = y, times = t, func = rigidmode, parms = para)
 
 # Plotting the solution
-X11(scatterplot3d(out[,-1])) # minus sign means remove - here remove 1st column
+# Phase plot
+X11(scatterplot3d(out[,-1])) # minus sign means remove - here remove 1st column (time)
+
 plot(out) # will cause function overloading
