@@ -2,7 +2,7 @@
 # dN/dt = r.N(1-(N/k))
 
 # Analytical solution
-# N(t) = k.N(theta).exp(r.t) / (k + N(0).(exp(r.t) - 1))
+# N(t) = k.N(0).exp(r.t) / (k + N(0).(exp(r.t) - 1))
 
 library(deSolve)
 
