@@ -81,3 +81,12 @@ lines(out4[,2], out4[,3])
 
 #Print summary
 print(out)
+
+# Part 2: Linearise and find eigen values at (0,0) and (1,1)
+library(rootSolve)
+lambdas <- eigen(jacobian.full(y = c(0,0), func = LV_model, parms = a))$values
+print(lambdas)
+print("Since 1 eigen value is positive and the other is negative and both are real, (0,0) is a saddle point")
+lambdas <- eigen(jacobian.full(y = c(1,1), func = LV_model, parms = a))$values
+print(lambdas)
+print("Since both eigen value are imaginary, (1,1) is a centre")
