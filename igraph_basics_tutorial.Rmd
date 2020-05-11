@@ -17,7 +17,8 @@ library("igraphdata")
 ## Directed Graph
 
 Create a directed graph with nodes that connect successive pairs.
-N1->N2, N2->N3, N3->N4, N4->N1, N1->5, N2->N5 with 2 isolates N6, N7
+N1->N2, N2->N3, N3->N4, N4->N1, N1->N5, N2->N5 with 2 isolates N6, N7
+Write these nodes in the same order as above. Define isolated separated.
 ```{r}
 gr1_dir = graph(c("N1","N2","N2","N3","N3","N4","N4","N1","N1","N5","N2","N5"), isolates=c("N6","N7"))
 ```
@@ -31,8 +32,8 @@ Add edge weights, if you want a **weighted graph**, using E() function
 ```{r}
 E(gr1_dir)$weight <- c(1.5, 2.0, 4.0, 2.5, 1.9, 1.0, 1.0)
 plot(gr1_dir)
-# We can also tamper with plot parameters
 
+# We can also tamper with plot parameters
 plot(gr1_dir, vertex.label.cex=0.8,vertex.label.dist=2.6, edge.arrow.size=0.5)
 
 plot (gr1_dir,
@@ -48,7 +49,7 @@ Create an undirected graph for same data.
 
 ```{r}
 gr1_undir = graph(c("N1","N2","N2","N3","N3","N4","N4","N1","N1","N5","N2","N5"), isolates=c("N7","N8"), directed=F)
-graph(c("N1","N2","N2","N3","N3","N4","N4","N1","N1","N5","N2","N5"), isolates=c("N7","N8"))
+# graph(c("N1","N2","N2","N3","N3","N4","N4","N1","N1","N5","N2","N5"), isolates=c("N7","N8"))
 V(gr1_dir)$type <- c(rep("proteins",5),rep("small molecues",2))
 
 # Plot the graph
@@ -116,7 +117,7 @@ edge.color="lightsteelblue")
 
 ### Degree Measures
 
-1. Edge density = ratio between edges in the graph to all pssoble edges between nodes
+1. Edge density = ratio between edges in the graph to all possible edges between nodes
 
 ```{r}
 print(  edge_density(gr1_dir) )
