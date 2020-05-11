@@ -1,0 +1,228 @@
+---
+title: "Assignment 2: Graph Theory"
+author: "Suparna Kumar, Roll no. 33"
+date: "09/05/2020"
+output: html_document
+---
+
+For creating networks in R, attach the library **igraph**.
+
+```{r, message=FALSE}
+library(igraph)
+```
+
+### Introduction to Networks
+
+A *network* or a *graph* is a catalog of a system’s components often called *nodes* or *vertices* and the direct interactions between them, called *links* or *edges*. In the scientific literature the terms *network* and *graph* are used interchangeably, but there is a subtle difference. The *{network, node, link}* combination often refers to real systems while the terms *{graph, vertex, edge}* are used to discuss the mathematical representation of these networks.
+
+**Number of nodes**, or *N*, represents the number of components in the system which gives the size of the network. To distinguish the nodes, we label them with *i* = 1, 2, ..., *N*.
+
+**Number of links**, which we denote with *L*, represents the total number of interactions between the nodes. For example, the (2, 4) link connects nodes 2 and 4. The links of a network can be *directed* or *undirected*.
+
+A network is called **directed (or digraph)** if all of its links are directed. It is called **undirected** if all of its links are undirected.
+
+Some networks simultaneously have directed and undirected links. For example, in the metabolic network some reactions are reversible (i.e., bidirectional or undirected) and others are irreversible, taking place in only one direction (directed).
+
+### Question 1: Find the transcription factor (out of 181 given) which connects to maximum number of genes.
+
+The first step in creating a network is to load the table that contains information on the interactions between the transcription factors and the genes. Let us name it **interactions**. It contains the interactions between 181 transcription factors and 22638 genes. Transcription factors are under the column **"target"** and genes are under the column **"source"** in the **interactions** table. Edge weights are given by the column named **"weights"**. **source_id** and **target_id** contain the GeneIDs given by [ENCODE](https://www.encodeproject.org).
+
+Now create the table of transcription factors mapping to genes. Include edge weights also. The first column represents the the node **from** which the link starts and the second column represents the node **to** which the link points. Since we are creating a data frame of transcription factors mapping to genes, the transcription factors must be in the first column.
+
+```{r}
+# Load the interactions file
+interactions <- read.table("~/Downloads/R_Prog/SysBio/sysbio_assignment-3/gene_attribute_edges.txt", sep = "\t", header = TRUE, stringsAsFactors = FALSE)
+
+# Create a new data frame with relevant information for building a network
+TF_to_gene_table = data.frame(TF = interactions$target, GENE = interactions$source, weight = interactions$weight, stringsAsFactors = FALSE)
+```
+
+Now we create a *directed* graph of transcription factors to genes. For this, we make use of the **graph_from_data_frame()** function provided by the **igraph** package. The parameters to this function are:
+
+*d* : A data frame containing a symbolic edge list in the first two columns. Additional columns are considered as edge attributes.
+
+*directed* : Logical scalar, whether or not to create a directed graph.
+
+*vertices* : A data frame with vertex metadata, or NULL by default.
+
+
+```{r}
+# Build directed network
+graph_TF_G = graph_from_data_frame(d=TF_to_gene_table, directed = T)
+```
+
+The *degree* of the $i^{th}$ node, $k_i$, is defined as the number of links that node *i* has to other nodes. In *directed networks* we distinguish between *incoming degree*, $k_i^{in}$, representing the number of links that point to node *i*, and *outgoing degree*, $k_i^{out}$, representing the number of links that point from node *i* to other nodes. Thus, a node’s total degree, $k_i$, is given by:
+
+$k_i = k_i^{in} + k_i^{out}$
+
+The directed network we have created is such that outgoing links from a node mean that the node is a transcription factor. If a node contains incoming links, it is a gene. Based on this, we can find out the transcription factor which connects to maximum number of genes.
+
+Thus, we calculate the degrees of each node with outgoing links, excluding self-loops, and find the maximum. For this, we make use of two functions - **max()** and **degree()**.
+
+**degree()** calculates the degrees of each vertex in the graph and returns the result as a named numeric vector. It requires the following parameters:
+
+*graph* : The graph to analyze.
+
+*v* : The ids of vertices of which the degree will be calculated.
+
+*mode* : Character string, *"out"* for out-degree, *"in"* for in-degree or *"total"* or *"all"*for the sum of the two. For undirected graphs this argument is ignored.
+
+*loops* : Logical; whether the loop edges are also counted.
+
+**max()** returns the maximum of all the values present in its argument, as integer if all are logical or integer, as double if all are numeric, and character otherwise.
+
+
+```{r}
+# Calculate degrees of transcription factors only
+degs_TF <- degree(graph = graph_TF_G, loops = FALSE, mode = "out", v = unique(TF_to_gene_table$TF))
+
+# Find transcription factor with maximum degree
+TF <- degs_TF[which(degs_TF == max(degs_TF))]
+
+print(TF)
+```
+
+### Question 2: Find the gene connected to maximum number of transcription factors. What is the function of this gene?
+
+Similarly, we calculate the degrees of each node with incoming links, excluding self-loops, and find the maximum. This will give us the gene that connects to the maximum number of transcription factors.
+
+```{r}
+# Find out the gene names
+genes_without_TF <- setdiff(unique(TF_to_gene_table$GENE), unique(TF_to_gene_table$TF))
+
+# Calculate degrees of genes only
+degs_genes <- degree(graph = graph_TF_G, loops = FALSE, mode = "in", v = genes_without_TF)
+
+# Find gene with maximum degree
+gene <- degs_genes[which(degs_genes == max(degs_genes))]
+
+print(gene)
+```
+
+
+According to the [GeneCards](https://www.genecards.org) database, the full form of WDR74 is WD repeat domain 74 and this gene is found in *Homo sapiens*. The functions of WDR74 are as follows:
+
+It is a regulatory protein of the MTREX-exosome complex involved in the synthesis of the 60S ribosomal subunit (PubMed:26456651).
+
+It participates in an early cleavage of the pre-rRNA processing pathway in cooperation with NVL (PubMed:29107693).
+
+It is required for blastocyst formation and is necessary for RNA transcription, processing and/or stability during preimplantation development (By similarity).
+
+### Question 3: Take any five genes of interest to your MSc Project. Find the lists of transcription factors connecting each one of them.
+
+From my project, I have chosen these five genes of interest - ETV7, OAS2, AFF1, ITPKB, and RORA. The first three genes are hypomethylated in rheumatoid arthritis while the last two genes are hypermethylated.
+
+In order to find how many transcription factors each gene connects to, we can use the degree vector containing the degrees of all the genes that we calculated in *Question 2*. To find the names of the transcription factors associated with each gene, let us first create a logical vector that will tell us whether or not the given gene name is present in a row. We can do this by using **grepl()**.
+
+Parameters passed to **grepl()** are:
+
+*pattern* : Character string containing a regular expression to be matched in the given character vector.
+
+*x* : A character vector where matches are sought.
+
+Once we have obtained the logical vector, we will use it to filter out only those values under the "TF" column of the table used to make the network, "TF_to_gene_table". This will give us a character vector containing the required transcription factors. We can save this list to a text file.
+
+
+```{r}
+## For ETV7
+# Logical vector
+vals <- grepl("ETV7", TF_to_gene_table$GENE)
+
+# Select TF for ETV7
+tf <- TF_to_gene_table[vals,1]
+
+# Save to text file
+sink(file = "~/Downloads/R_Prog/SysBio/sysbio_assignment-3/TF-ETV7.txt", append = TRUE)
+print(degs_genes["ETV7"], quote = FALSE)
+print("Transcription factors connected to gene ETV7 are: ", quote = FALSE)
+print(tf, quote = FALSE)
+sink()
+```
+
+```{r}
+## For OAS2
+# Logical vector
+vals <- grepl("OAS2", TF_to_gene_table$GENE)
+
+# Select TF for OAS2
+tf <- TF_to_gene_table[vals,1]
+
+# Save to text file
+sink(file = "~/Downloads/R_Prog/SysBio/sysbio_assignment-3/TF-OAS2.txt", append = TRUE)
+print(degs_genes["OAS2"], quote = FALSE)
+print("Transcription factors connected to gene OAS2 are: ", quote = FALSE)
+print(tf, quote = FALSE)
+sink()
+```
+
+```{r}
+## For AFF1
+# Logical vector
+vals <- grepl("AFF1", TF_to_gene_table$GENE)
+
+# Select TF for AFF1
+tf <- TF_to_gene_table[vals,1]
+
+# Save to text file
+sink(file = "~/Downloads/R_Prog/SysBio/sysbio_assignment-3/TF-AFF1.txt", append = TRUE)
+print(degs_genes["AFF1"], quote = FALSE)
+print("Transcription factors connected to gene AFF1 are: ", quote = FALSE)
+print(tf, quote = FALSE)
+sink()
+```
+
+```{r}
+## For ITPKB
+# Logical vector
+vals <- grepl("ITPKB", TF_to_gene_table$GENE)
+
+# Select TF for ITPKB
+tf <- TF_to_gene_table[vals,1]
+
+# Save to text file
+sink(file = "~/Downloads/R_Prog/SysBio/sysbio_assignment-3/TF-ITPKB.txt", append = TRUE)
+print(degs_genes["ITPKB"], quote = FALSE)
+print("Transcription factors connected to gene ITPKB are: ", quote = FALSE)
+print(tf, quote = FALSE)
+sink()
+```
+
+```{r}
+## For RORA
+# Logical vector
+vals <- grepl("RORA", TF_to_gene_table$GENE)
+# Select TF for RORA
+tf <- TF_to_gene_table[vals,1]
+
+# Save to text file
+sink(file = "~/Downloads/R_Prog/SysBio/sysbio_assignment-3/TF-RORA.txt", append = TRUE)
+print(degs_genes["RORA"], quote = FALSE)
+print("Transcription factors connected to gene RORA are: ", quote = FALSE)
+print(tf, quote = FALSE)
+sink()
+```
+### Question 4: Plot a histogram of the number of transcription factors per gene.
+
+Since we have the degrees of each gene already calculated in *Question 2*, we will pass that numeric vector to a function called **hist()** which will plot the histogram. The X-axis of the histogram corresponds to the degrees of the genes, which corresponds to the number of transcription factors. The frequency of the histogram corresponds to the number of genes. We will create the histogram using a class interval of 50.
+
+The parameters passed to **hist()** for this question are:
+
+*x* : a vector of values for which the histogram is desired.
+
+*breaks* : a single number giving the number of cells for the histogram
+
+*main*, *xlab*, *ylab* : Main title and axis labels.
+
+*xlim*, *ylim* : The range of x and y values with sensible defaults used for plotting.
+
+```{r}
+# Plot histogram
+
+hist(x = degs_genes, xlab = "No. of Transcription Factors", ylab = "Number of Genes", main = "Histogram of Number of Transcription Factors Per Gene", ylim = c(0,2000), xlim = c(0,200), breaks = 50)
+
+# Save as PNG
+png(filename = "~/Downloads/R_Prog/SysBio/sysbio_assignment-3/Histogram.png")
+hist(x = degs_genes, xlab = "No. of Transcription Factors", ylab = "Number of Genes", main = "Histogram of Number of Transcription Factors Per Gene", ylim = c(0,2000), xlim = c(0,200), breaks = 50)
+dev.off()
+```
+
