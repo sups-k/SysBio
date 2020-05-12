@@ -1,0 +1,37 @@
+ENCODE (ENCyclopedia Of Dna Elements) Transcription Factor Targets data
+--------------------------------------------------------------------------
+
+Description:  target genes of transcription factors from transcription factor binding site profiles
+
+Measurement:  transcription factor DNA-binding by ChIP-seq
+
+Association:   target gene-transcription factor associations by binding of transcription factor near 
+                transcription start site of gene
+
+
+There are three data files :
+
+1. The file "gene_list_terms.txt" contains a list of 22449 in the data base
+
+2. The file "attribute_list_entries.txt" contains the list of 181 transcription factors associated with the 22449 genes in the above list. 
+
+
+3. The file "gene_attribute_edges.txt" contains 1651393 gene-transcription factor associations between the above 22449 genes and 181 transcription factors. We use this file for our protein-protein interaction
+analysis.
+
+
+data downloaded from :
+-----------------------
+https://amp.pharm.mssm.edu/Harmonizome/dataset/ENCODE+Transcription+Factor+Targets
+
+
+The main encode web page for details of the project and how data collected :
+-----------------------------------------------------------------------------
+https://www.encodeproject.org/
+
+
+
+
+
+
+
