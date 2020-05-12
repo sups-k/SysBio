@@ -1,0 +1,5 @@
+User   link1 link2 link3 link4
+    abc1     0     1     1     1
+    abc2     1     0     1     0
+    abc3     0     1     1     1
+    abc4     1     0     1     0

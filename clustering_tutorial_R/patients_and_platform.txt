@@ -1,0 +1,104 @@
+Details retrieved from:
+
+Link: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE12021
+
+
+Status	Public on Mar 11, 2002
+Title	[HG-U133A] Affymetrix Human Genome U133A Array
+Technology type	in situ oligonucleotide
+Distribution	commercial
+Organism	Homo sapiens
+Manufacturer	Affymetrix
+Manufacture protocol	see manufacturer's web site
+
+The U133 set includes 2 arrays with a total of 44928 entries and was indexed 29-Jan-2002.
+The set includes over 1,000,000 unique oligonucleotide features covering more than 39,000 transcript variants, which in turn represent greater than 33,000 of the best characterized human genes.
+
+
+Control Samples: 
+
+9 in number
+
+RA Samples:
+
+12 in number
+
+Patient1:GSM302872_EB_20.CEL
+ 
+Characteristics	
+sex: m
+age: 75
+disease:rheumatoid arthritis
+
+Patient2:GSM302882_EB_27.CEL
+ 
+Characteristics	
+sex: f
+age: 79
+disease: rheumatoid arthritis
+
+Patient3:GSM302896.CEL
+ 
+Characteristics	
+sex: f
+age: 62
+disease: rheumatoid arthritis
+
+Patient4:GSM302900_EB_35_A.CEL
+ 
+Characteristics	
+sex: f
+age: 66
+disease: rheumatoid arthritis
+
+Patient5:GSM302924_EB_40.CEL
+ 
+Characteristics	
+sex: f
+age: 64
+disease: rheumatoid arthritis
+
+Patient6:GSM302927_EB_41.CEL
+ 
+Characteristics	
+sex: f
+age: 63
+disease: rheumatoid arthritis
+
+Patient7:GSM302933_EB_56.CEL
+ 
+Characteristics	
+sex: f
+age: 46
+disease: rheumatoid arthritis
+
+Patient8:GSM302943_EB_74.CEL
+ 
+Characteristics	
+sex: f
+age: 71
+disease: rheumatoid arthritis
+
+Patient9:GSM303364_EB_108.CEL
+Characteristics	
+sex: f
+age: 73
+disease: rheumatoid arthritis
+
+Patient10:GSM303366_EB_110.CEL
+Characteristics	
+sex:m
+age: 47
+disease: rheumatoid arthritis
+
+Patient11:GSM303368_EB_124.CEL
+Characteristics	
+sex: m
+age:59
+disease: rheumatoid arthritis
+
+Patient12:GSM303520_EB_141.CEL
+Characteristics	
+sex: f
+age: 73
+disease: rheumatoid arthritis
