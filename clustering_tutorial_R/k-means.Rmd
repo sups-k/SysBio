@@ -159,7 +159,7 @@ print(cl$totss)
 # Print the total sum of squares of distances of each cluster centroid to the global centroid
 print(cl$betweenss)
 
-# Clustering Ratio of between SS to total SS - check if ratio is big
+# Clustering Ratio of between SS to total SS - check if ratio is close to 1
 clratio = cl$betweenss/cl$totss
 print(clratio)
 ```
