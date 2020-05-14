@@ -1,0 +1,162 @@
+---
+title: "Hierarchical Clustering"
+author: "Suparna"
+date: "09/05/2020"
+output: html_document
+---
+## Introduction
+
+Hierarchical clustering is used for a "deep" analysis of data, like when the parameters are gene expression levels in different tissue types. For analysing data with parameters like weight, height, blood pressure, etc., it is best to use k-means clustering.
+
+
+In hierarchical clustering, similar objects (based on some defined criteria) are grouped into clusters and this is called a dendrogram. It shows the relationships among various clusters. Dendrograms are fequently used in computational molecular biology to illustrate the branching based on clustering of genes or proteins (not their sequences). Hierarchical clustering uses the algorithm given by S. C. Johnson (1967).
+
+
+A phylogenetic tree is different from a dendrogram. Phylogenetic trees can be scaled or unscaled. In a scaled tree, the branch length is proportional to the amount of evolutionary divergence (e.g. the number of nucleotide substitutions) that has occurred along that branch. In an unscaled tree, the branch length is not proportional to the amount of evolutionary divergence, but usually the actual number is indicated somewhere on the branch.
+
+
+The following information is taken from [here](https://home.deib.polimi.it/matteucc/Clustering/tutorial_html/hierarchical.html). Given a set of N items to be clustered, and an N*N distance (or similarity) matrix, the steps of hierarchical are outlined as follows:
+
+
+1. Start by assigning each item to a cluster, so that if you have N items, you now have N clusters, each containing just one item. Let the distances (similarities) between the clusters the same as the distances (similarities) between the items they contain.
+2. Find the closest (most similar) pair of clusters and merge them into a single cluster, so that now you have one cluster less.
+3. Compute distances (similarities) between the new cluster and each of the old clusters.
+4. Repeat steps 2 and 3 until all items are clustered into a single cluster of size N. Of course there is no point in having all the N items grouped in a single cluster but, once you have got the complete hierarchical tree, if you want k clusters you just have to cut the k-1 longest links.
+
+
+This kind of hierarchical clustering is called **agglomerative** because it merges clusters iteratively. There is also a **divisive** hierarchical clustering which does the reverse by starting with all objects in one cluster and subdividing them into smaller pieces. Divisive methods are not generally available, and rarely have been applied.
+
+
+## Clustering Methods
+
+Step 3 can be performed by many methods. In R, there is a function called `hclust()` that performs hierarchical clustering. To this function, you can specify the method for step 3 using the `method` parameter. The `method` parameter can take the following values:
+
+
+1. ward.D
+2. ward.D2
+3. single
+4. complete
+5. average
+6. mcquitty
+7. median
+8. centroid
+
+
+In this document, we will discuss only single-linkage, complete-linkage, and average-linking clustering.
+
+
+### Single-Linkage Clustering
+
+In *single-linkage clustering* (also called the *connectedness* or *minimum* method), we consider the **distance** between one cluster and another cluster to be equal to the **shortest** distance from **any** member of one cluster to **any** member of the other cluster.
+
+
+If the data consist of **similarities**, we consider the similarity between one cluster and another cluster to be equal to the **greatest** similarity from **any** member of one cluster to **any** member of the other cluster.
+
+### Complete-Linkage Clustering
+
+In *complete-linkage clustering* (also called the *diameter* or *maximum* method), we consider the **distance** between one cluster and another cluster to be equal to the **greatest** distance from **any** member of one cluster to **any** member of the other cluster.
+
+
+### Average-Linkage Clustering
+
+In *average-linkage clustering* (or the [UPGMA](http://www.icp.ucl.ac.be/~opperd/private/upgma.html) method), we consider the **distance** between one cluster and another cluster to be equal to the **average** distance from **any** member of one cluster to **any** member of the other cluster.
+
+
+## Example Implementation in R
+
+For the following code, you will require the file "tissue_data.txt". The data is composed of gene expression levels for 10 genes in 5 tissues.
+
+
+### Step 1: Loading Data
+
+After reading the data from the file, convert it into a matrix. This is because the input to `hclust()` has to be a matrix of distances.
+
+
+```{r}
+# Read data
+dat = read.table("tissue_data.txt", header = TRUE, stringsAsFactors = FALSE)
+# Convert to matrix
+y = as.matrix(dat)
+```
+
+### Step 2a: Compute Distance Matrix
+
+The distance matrix of the data is computed by the function `dist()` which takes in the numeric matrix of values you want to cluster in the parameter `d`. You have to mention the distance measure to calculate using the `method` parameter out of the ones below. Available distance measures, written for two vectors $x$ and $y$ with $n$ components, are:
+
+1. **Euclidean:** Usual distance between the two vectors, $d = \sqrt{\displaystyle\sum_{i=1}^{n}(x_i - y_i)^2}$.
+2. Maximum
+3. **Manhattan:** The distance between two points measured along axes at right angles. $d = \displaystyle\sum_{i=1}^{n}|x_i - y_i|$.
+4. **Canberra:** $d = \displaystyle\sum_{i=1}^{n} \dfrac{|x_i - y_i|}{|x_i| + |y_i|}$. Terms with zero numerator and denominator are omitted from the sum and treated as if the values were missing. This is intended for non-negative values (e.g., counts), in which case the denominator can be written in various equivalent ways; Originally, `R` used $x_i + y_i$, then from 1998 to 2017, $|x_i + y_i|$, and then the correct $|x_i| + |y_i|$.
+5. **Binary (aka asymmetric binary):** The vectors are regarded as binary bits, so non-zero elements are ‘on’ and zero elements are ‘off’. The distance is the proportion of bits in which only one is on amongst those in which at least one is on.
+6. **Minkowski:** The Minkowski distance is the generalized $L_p$-norm of the difference.
+$d_p : (x,y) \to ||x - y||_p = \big( \displaystyle \sum_{i=1}^{n} |x_i - y_i|^p \big)^{\frac{1}{p}} $
+
+```{r}
+# For clustering genes - distance matrix
+dist_genes = dist(y, method = "euclidean") # No need to transpose; finds distance measure on genes
+
+# For clustering tissues - distance matrix
+dist_tiss = dist(t(y)) # Transpose the matrix; finds distance measure on tissues
+```
+
+### Step 2b: Compute Similarity Matrix
+
+In case you don't have to compute the distance and instead need the similarity matrix, use the `cor()` function. The correlation matrix produced gives similarity measures.
+
+```{r}
+# For clustering genes - similarity matrix
+corr_genes <- cor(t(y), method = "spearman")
+# Transposing y will create the correlation matrix of genes
+sim_genes <- as.dist(max(corr_genes) - corr_genes)
+
+# For clustering tissues - similarity matrix
+corr_tiss <- cor(y, method = "spearman")
+# Transposing y will create the correlation matrix of genes
+sim_tiss <- as.dist(max(corr_tiss) - corr_tiss)
+```
+
+### Step 3: Perform Hierarchical Clustering
+
+Perform hierarchical clustering using the complete-linkage method.
+
+```{r}
+## Clustering using distance matrix
+
+# Genes
+hr_genes_dist <- hclust(dist_genes, method = "complete", members = NULL)
+
+# Tissues
+hr_tiss_dist <- hclust(dist_tiss, method = "complete", members = NULL)
+
+
+## Clustering using similarity matrix
+
+# Genes
+hr_genes_sim <- hclust(sim_genes, method = "complete", members = NULL)
+
+# Tissues
+hr_tiss_sim <- hclust(sim_tiss, method = "complete", members = NULL)
+```
+
+### Step 4: Plot Dendrogram
+
+```{r}
+# Dendrogram - Genes using distance matrix
+plot(hr_genes_dist, xlab = "Distance")
+```
+
+```{r}
+# Dendrogram - Genes using similarity matrix
+plot(hr_genes_sim, xlab = "Similarity")
+```
+
+```{r}
+# Dendrogram - Tissues using distance matrix
+plot(hr_tiss_dist, xlab = "Distance")
+```
+
+```{r}
+# Dendrogram - Tissues using similarity matrix
+plot(hr_tiss_sim, xlab = "Similarity")
+```
+
