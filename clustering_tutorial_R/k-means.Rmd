@@ -1,0 +1,166 @@
+---
+title: "K-Means Clustering"
+author: "Suparna"
+date: "09/05/2020"
+output: html_document
+---
+
+## Introduction
+
+K-means clustering is a type of unsupervised learning exclusive clustering where data can only belong to one cluster. It is one of the most popular/useful clustering algorithms in bioinformatics apart from hierarchical clustering.
+
+
+The concept of *distance* in clustering is a value with respect to the reference. **Euclidean distance** is most commonly employed by the algorithms (even here in R) but it **works only if all the dimensions of the data are in the same unit and on the same scale**. Thus, the data has to be normalised before k-means clustering.
+
+
+Other distance measures include Squared Euclidean Distance, Manhattan distance, Pearson correlation, Pearson squared, Maximum distance between attributes of the vectors, Mahalanobis distance, cosine similarity, etc.
+
+
+## Step 1: Scatter Plot
+
+The data is in the form of a M x N matrix where M is the number of observations and N is the number of dimensions, i.e., number of parameters. Make sure that all the data in each parameter have the same units, eliminating the need for normalisation. Normalise it otherwise.
+
+
+Plot a scatter plot of the data and then count the number of clusters the data forms. If the data doesn't seem to form any clusters, do not run the algorithm.
+
+
+```{r}
+# Read data file
+dat = read.table("clusterdata.txt", header = TRUE, stringsAsFactors = FALSE)
+
+#Plot to check for clusters
+plot(x = dat$BP_condition_1, y = dat$BP_condition_2, col = "pink", main = "Scatter plot of blood pressure measures", xlab = "BP under condition 1", ylab = "BP under condition 2")
+```
+
+
+From the above graph, we can discern 3 clusters. We will input this number, K, in the k-means function. Make sure K < N.
+
+
+## Step 2: Perform K-Means Clustering
+
+
+K-means in R can be performed using the Hartigan-Wong algorithm (default), the Lloyd/Forgy algorithm, or the MacQueen algorithm. This is specified in the *algorithm* parameter of the `kmeans()` function.
+
+
+### Lloyd/Forgy Algorithm - 1957, 1965
+
+
+Both these algorithms are batch centroid models. *Batch/offline algorithms* are algorithms where a transformative step is applied to all the cases (data points) at once. A *centroid* is a generalisation of the mean. It is calculated as the mean of the coordinates of each point. For example, in a 2D data space containing cases $(x_1, y_1), (x_2, y_2), ... , (x_n, y_n)$, the centroid (X,Y) of a cluster is given by $X = \dfrac{1}{m} \displaystyle\sum_{i=1}^{m} x_i$ and $Y = \dfrac{1}{m} \displaystyle\sum_{i=1}^{m} y_i$, where $m$ is the number of cases within a cluster.
+
+**Batch algorithms are well-suited for large datasets.** This is because other incremental k-means algorithms require to store the cluster membership of each case (data point) or to do two nearest-cluster computations as each case (data point) is processed. Such steps are computationally expensive on large datasets.
+
+
+The difference between the Lloyd algorithm and the Forgy algorithm is that the **Lloyd algorithm considers the data distribution discrete** while the **Forgy algorithm considers the distribution continuous**. They have exactly the *same procedure* apart from that consideration.
+
+
+1. Choose the number of clusters *k*.
+2. Choose the distance metric.
+3. Choose the method to pick *k* initial centroids:
+  i) Assign them based on previous empirical knowledge, if available.
+  ii) Use *k* random observations from the data set.
+  iii) Use the *k* observations that are the farthest from one another in the data space
+  iv) Assign *k* random values that lie within the data space (not data set).
+4.  Each case of the data set is assigned to a cluster based on its distance from the cluster's centroids. All cases assigned to a centroid are said to be part of the centroid’s subspace.
+5. Update the value of the centroid using the mean of the cases assigned to the centroid.
+6. Repeat steps 4 and 5 until the centroids stop changing, within a tolerance criterion decided by the researcher, or until no case changes cluster.
+
+
+### MacQueen Algorithm - 1967
+
+
+MacQueen algorithm is an **iterative/online** algorithm. The main difference between MacQueen's and Forgy/Lloyd’s algorithm is that the centroids are recalculated every time a case changes subspace and also after each pass through all cases. This algorithm considers the data distribution continuous.
+
+The centroids are initialized in the same way as in the Forgy/Lloyd algorithm. For each case, turn by turn, if the centroid of the subspace it currently belongs to is the nearest, no change is made. If another centroid is the closest, the case is reassigned to the other centroid and the centroids for both the old and new subspaces are recalculated as the mean of the belonging cases. 
+
+1. Choose the number of clusters *k*.
+2. Choose the distance metric.
+3. Choose the method to pick *k* initial centroids:
+  i) Assign them based on previous empirical knowledge, if available.
+  ii) Use *k* random observations from the data set.
+  iii) Use the *k* observations that are the farthest from one another in the data space
+  iv) Assign *k* random values that lie within the data space (not data set).
+4.  Each case of the data set is assigned to a cluster based on its distance from the cluster's centroids. All cases assigned to a centroid are said to be part of the centroid’s subspace.
+5. Update the value of the centroid using the mean of the cases assigned to the centroid.
+6. Calculate the distance of each case from the new centroids and compare these distances to the distance of the cases from the old centroids. Assign the case to the new centroid if the distance is shorter.
+7. Calculate the new centroids for the 2 clusters, the one the case previously belonged to and the one it now belongs to.
+8. After all cases have been evaluated, calculate the new centroids for all clusters.
+9. Repeat steps 4 to 8 until the centroids stop changing, within a tolerance criterion decided by the researcher, or until no case changes cluster.
+
+
+### Hartigan & Wong algorithm - 1979
+
+
+This algorithm may assign a case to another subspace, even if it currently belong to the subspace of the closest centroid, if doing so minimizes the total within-cluster sum of squares of errors (SSE).
+
+
+1. Choose the number of clusters *k*.
+2. Choose the distance metric.
+3. Choose the method to pick *k* initial centroids:
+  i) Assign them based on previous empirical knowledge, if available.
+  ii) Use *k* random observations from the data set.
+  iii) Use the *k* observations that are the farthest from one another in the data space
+  iv) Assign *k* random values that lie within the data space (not data set).
+4.  Each case of the data set is assigned to a cluster based on its distance from the cluster's centroids. All cases assigned to a centroid are said to be part of the centroid’s subspace.
+5. Update the value of the centroid using the mean of the cases assigned to the centroid.
+6.  If the centroid has been updated in the previous step, for each case that moved to a different cluster, the within-cluster SSE for the old cluster and the new cluster are calculated as:
+$W(C_k) = \displaystyle\sum_{x_i \in C_k} (x_i - \mu_k)^2$
+where $x_i$ is a data point (case) belonging to cluster $C_k$ and $\mu_k$ is the centroid of $C_k$.
+This particular case is included in the calculation for both clusters.
+7. Move the case to the cluster that has the lowest within-cluster SSE, even if it means retaining the case in the old cluster.
+8. After this is performed for all cases, calculate the total within-cluster SSE as:
+$\displaystyle\sum_{k=1}^{k} W(C_k)$
+9. Repeat steps 4 to 8 until the total within-cluster SSE is minimised or the maximum number of iterations is reached (usually 10 iterations by default in R).
+
+
+### K-Means Function in R
+
+
+R contains a function `kmeans()` in the `stats` package to perform k-means clustering. No matter what algorithm is specified, the function calculates the within-cluster SSE as `withinss` and the total within-cluster SSE as `tot.withinss`. The parameter `totss` computes the total sum of squares of distances of each point in the data space to the global centroid. The parameter `betweenss` computes the total sum of squares of distances of each cluster centroid to the global centroid, i.e., `totss - tot.withinss`.
+
+
+**The `nstart` parameter attempts multiple initial configurations and reports the best one. It is recommended to provide this parameter such that `nstart` > 1.**
+
+
+Take a ratio of `betweenss` to the `totss`. If there is no identifiable clustering, the centroids of individual clusters should be close to the global centroid and this ratio will be small. If the ratio is big, this means there is discernable clustering.
+
+
+Additional information about the function can be seen on the help page.
+
+
+```{r}
+cl <- kmeans(x = dat, centers = 3, algorithm = "MacQueen", nstart = 25)
+```
+
+## Step 3: Plot The Cluster
+
+```{r}
+plot(dat, col = cl$cluster)
+
+# Plot cluster centres
+points(cl$centers, col = 1:2, pch = 8, cex = 2)
+```
+
+
+## Step 4: Calculate Cluster Parameters
+
+```{r}
+# Print the number of data points in each cluster:
+print(cl$size)
+
+# Print cluster category of each data point:
+print(cl$cluster)
+
+# Print cluster centroids
+print(cl$centers) 
+
+#Print the total sum of squares of distances of each point in the data space to the global centroid
+print(cl$totss)
+
+# Print the total sum of squares of distances of each cluster centroid to the global centroid
+print(cl$betweenss)
+
+# Clustering Ratio of between SS to total SS - check if ratio is big
+clratio = cl$betweenss/cl$totss
+print(clratio)
+```
+
