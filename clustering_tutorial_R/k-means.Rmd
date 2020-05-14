@@ -7,7 +7,7 @@ output: html_document
 
 ## Introduction
 
-K-means clustering is a type of unsupervised learning exclusive clustering where data can only belong to one cluster. It is one of the most popular/useful clustering algorithms in bioinformatics apart from hierarchical clustering.
+K-means clustering is a type of unsupervised learning exclusive clustering where data can only belong to one cluster. It is one of the most popular/useful clustering algorithms in bioinformatics apart from hierarchical clustering. Usually, it is used when the parameters of the data are easily observable characteristics like blood pressure, body temperature, weight, etc. For parameters like gene expression levels, hierarchical clustering is a better method.
 
 
 The concept of *distance* in clustering is a value with respect to the reference. **Euclidean distance** is most commonly employed by the algorithms (even here in R) but it **works only if all the dimensions of the data are in the same unit and on the same scale**. Thus, the data has to be normalised before k-means clustering.
