@@ -13,10 +13,10 @@ View(iris)
 # Four parameters are measured - sepal length, sepal width, petal length, and petal width.
 
 # Plot the scatter plot of sepal length and sepal width
-plot(iris$Sepal.Length, iris$Sepal.Width)
+plot(iris$Sepal.Length, iris$Sepal.Width, ylim = c(2,7.9), xlim = c(2,7.9))
 
 # Plot the scatter plot of petal length and petal width
-plot(iris$Petal.Length, iris$Petal.Width)
+plot(iris$Petal.Length, iris$Petal.Width, xlim = c(0.1, 6.9), ylim = c(0.1, 6.9))
 
 
 ### 1. Print quality of clustering of petal length and petal width.
@@ -25,7 +25,7 @@ plot(iris$Petal.Length, iris$Petal.Width)
 petal <- iris[,c(3,4)]
 petal_cluster <- kmeans(x = petal, centers = 3, nstart = 25)
 
-plot(petal, col = petal_cluster$cluster)
+plot(petal, col = petal_cluster$cluster, xlim = c(0.1, 6.9), ylim = c(0.1, 6.9))
 
 # Plot cluster centres
 points(petal_cluster$centers, col = 1:2, pch = 8, cex = 2)
@@ -61,7 +61,7 @@ print(clratio)
 sepal <- iris[,c(1,2)]
 sepal_cluster <- kmeans(x = sepal, centers = 3, nstart = 25)
 
-plot(sepal, col = sepal_cluster$cluster)
+plot(sepal, col = sepal_cluster$cluster, ylim = c(2,7.9), xlim = c(2,7.9))
 
 # Plot cluster centres
 points(sepal_cluster$centers, col = 1:2, pch = 8, cex = 2)
@@ -82,7 +82,7 @@ print(clratio_3)
 # Cluster sepal length and sepal width into 4 clusters
 sepal_cluster <- kmeans(x = sepal, centers = 4, nstart = 25)
 
-plot(sepal, col = sepal_cluster$cluster)
+plot(sepal, col = sepal_cluster$cluster, ylim = c(2,7.9), xlim = c(2,7.9))
 
 # Plot cluster centres
 points(sepal_cluster$centers, col = 1:2, pch = 8, cex = 2)
@@ -103,7 +103,7 @@ print(clratio_4)
 # Cluster sepal length and sepal width into 5 clusters
 sepal_cluster <- kmeans(x = sepal, centers = 5, nstart = 25)
 
-plot(sepal, col = sepal_cluster$cluster)
+plot(sepal, col = sepal_cluster$cluster, ylim = c(2,7.9), xlim = c(2,7.9))
 
 # Plot cluster centres
 points(sepal_cluster$centers, col = 1:2, pch = 8, cex = 2)
@@ -124,7 +124,7 @@ print(clratio_5)
 # Cluster sepal length and sepal width into 6 clusters
 sepal_cluster <- kmeans(x = sepal, centers = 6, nstart = 25)
 
-plot(sepal, col = sepal_cluster$cluster)
+plot(sepal, col = sepal_cluster$cluster, ylim = c(2,7.9), xlim = c(2,7.9))
 
 # Plot cluster centres
 points(sepal_cluster$centers, col = 1:2, pch = 8, cex = 2)
