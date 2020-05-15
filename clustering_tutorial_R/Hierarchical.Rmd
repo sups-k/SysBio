@@ -9,7 +9,7 @@ output: html_document
 Hierarchical clustering is used for a "deep" analysis of data, like when the parameters are gene expression levels in different tissue types. For analysing data with parameters like weight, height, blood pressure, etc., it is best to use k-means clustering.
 
 
-In hierarchical clustering, similar objects (based on some defined criteria) are grouped into clusters and this is called a dendrogram. It shows the relationships among various clusters. Dendrograms are fequently used in computational molecular biology to illustrate the branching based on clustering of genes or proteins (not their sequences). Hierarchical clustering uses the algorithm given by S. C. Johnson (1967).
+In hierarchical clustering, similar objects (based on some defined criteria) are grouped into clusters and this is called a dendrogram. It shows the relationships among various clusters. Dendrograms are frequently used in computational molecular biology to illustrate the branching based on clustering of genes or proteins (not their sequences). Hierarchical clustering uses the algorithm given by S. C. Johnson (1967).
 
 
 A phylogenetic tree is different from a dendrogram. Phylogenetic trees can be scaled or unscaled. In a scaled tree, the branch length is proportional to the amount of evolutionary divergence (e.g. the number of nucleotide substitutions) that has occurred along that branch. In an unscaled tree, the branch length is not proportional to the amount of evolutionary divergence, but usually the actual number is indicated somewhere on the branch.
@@ -18,7 +18,7 @@ A phylogenetic tree is different from a dendrogram. Phylogenetic trees can be sc
 The following information is taken from [here](https://home.deib.polimi.it/matteucc/Clustering/tutorial_html/hierarchical.html). Given a set of N items to be clustered, and an N*N distance (or similarity) matrix, the steps of hierarchical are outlined as follows:
 
 
-1. Start by assigning each item to a cluster, so that if you have N items, you now have N clusters, each containing just one item. Let the distances (similarities) between the clusters the same as the distances (similarities) between the items they contain.
+1. Start by assigning each item to a cluster, so that if you have N items, you now have N clusters, each containing just one item. Let the distances (similarities) between the clusters be the same as the distances (similarities) between the items they contain.
 2. Find the closest (most similar) pair of clusters and merge them into a single cluster, so that now you have one cluster less.
 3. Compute distances (similarities) between the new cluster and each of the old clusters.
 4. Repeat steps 2 and 3 until all items are clustered into a single cluster of size N. Of course there is no point in having all the N items grouped in a single cluster but, once you have got the complete hierarchical tree, if you want k clusters you just have to cut the k-1 longest links.
@@ -91,6 +91,10 @@ The distance matrix of the data is computed by the function `dist()` which takes
 6. **Minkowski:** The Minkowski distance is the generalized $L_p$-norm of the difference.
 $d_p : (x,y) \to ||x - y||_p = \big( \displaystyle \sum_{i=1}^{n} |x_i - y_i|^p \big)^{\frac{1}{p}} $
 
+
+The process of creating the distance matrix, $D_{n \times n}$, from a given matrix, $A_{n \times m}$, is simple. The distance is calculated between each row such that every row is a vector whose components are given by the columns, i.e., the first row is represented as $R_1 = (C_1, C_2, ... , C_m)$, the second row as $R_2 = (C_1, C_2, ... , C_m)$, and the $n^{th}$ row as $R_n = (C_1, C_2, ... , C_m)$. So the distance is calculated between $R_1$ and $R_2$, then $R_1$ and $R_3$, and so on. A square matrix of size **n x n** is created with both rows and columns being the row names of the given matrix and only the lower triangle is filled with distances. Since the diagonal of this matrix is **0**, it is not printed by default.
+
+
 ```{r}
 # For clustering genes - distance matrix
 dist_genes = dist(y, method = "euclidean") # No need to transpose; finds distance measure on genes
@@ -104,7 +108,7 @@ dist_tiss = dist(t(y)) # Transpose the matrix; finds distance measure on tissues
 In case you don't have to compute the distance and instead need the similarity matrix, use the `cor()` function. The correlation matrix produced gives similarity measures. In the `method` parameter, specify which correlation coefficient must be calculated - pearson, kendall, or spearman. Kendall or Spearman are used if the input is ordered. If `method` is "kendall" or "spearman", Kendall's $\tau$ or Spearman's $\rho$ statistic is used to estimate a rank-based measure of association. These are more robust and have been recommended if the data do not necessarily come from a bivariate normal distribution. When there are ties, Kendall's $\tau_b$ is computed.
 
 
-We have chosed to use Spearman correlation coefficient in this example.
+We have chosen to use Spearman correlation coefficient in this example.
 
 
 ```{r}
