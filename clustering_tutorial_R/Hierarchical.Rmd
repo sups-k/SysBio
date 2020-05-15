@@ -101,7 +101,7 @@ dist_tiss = dist(t(y)) # Transpose the matrix; finds distance measure on tissues
 
 ### Step 2b: Compute Similarity Matrix
 
-In case you don't have to compute the distance and instead need the similarity matrix, use the `cor()` function. The correlation matrix produced gives similarity measures. In the `method` parameter, specify which correlation coefficient must be calculated - pearson, kendall, or spearman. Kendall or Spearman are used if the input is ordered. If `method` is "kendall" or "spearman", Kendall's $\tau$ or Spearman's $\rho$ statistic is used to estimate a rank-based measure of association. These are more robust and have been recommended if the data do not necessarily come from a bivariate normal distribution. When there are ties, Kendall's tau_b is computed.
+In case you don't have to compute the distance and instead need the similarity matrix, use the `cor()` function. The correlation matrix produced gives similarity measures. In the `method` parameter, specify which correlation coefficient must be calculated - pearson, kendall, or spearman. Kendall or Spearman are used if the input is ordered. If `method` is "kendall" or "spearman", Kendall's $\tau$ or Spearman's $\rho$ statistic is used to estimate a rank-based measure of association. These are more robust and have been recommended if the data do not necessarily come from a bivariate normal distribution. When there are ties, Kendall's $\tau_b$ is computed.
 
 
 We have chosed to use Spearman correlation coefficient in this example.
