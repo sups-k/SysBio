@@ -33,7 +33,7 @@ plot(x = dat$BP_condition_1, y = dat$BP_condition_2, col = "pink", main = "Scatt
 ```
 
 
-From the above graph, we can discern 3 clusters. We will input this number, K, in the k-means function. Make sure K < N.
+From the above graph, we can discern 3 clusters. We will input this number, K, in the k-means function.
 
 
 ## Step 2: Perform K-Means Clustering
