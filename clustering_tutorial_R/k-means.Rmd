@@ -29,7 +29,7 @@ Plot a scatter plot of the data and then count the number of clusters the data f
 dat = read.table("clusterdata.txt", header = TRUE, stringsAsFactors = FALSE)
 
 #Plot to check for clusters
-plot(x = dat$BP_condition_1, y = dat$BP_condition_2, col = "pink", main = "Scatter plot of blood pressure measures", xlab = "BP under condition 1", ylab = "BP under condition 2")
+plot(x = dat$BP_condition_1, y = dat$BP_condition_1.1, col = "pink", main = "Scatter plot of blood pressure measures", xlab = "BP under condition 1", ylab = "BP under condition 2", xlim = c(70,107), ylim = c(70,107))
 ```
 
 
@@ -134,10 +134,10 @@ cl <- kmeans(x = dat, centers = 3, algorithm = "MacQueen", nstart = 25)
 ## Step 3: Plot The Cluster
 
 ```{r}
-plot(dat, col = cl$cluster)
+plot(x = dat$BP_condition_1, y = dat$BP_condition_1.1, col = cl$cluster, main = "Scatter plot of blood pressure measures", xlab = "BP under condition 1", ylab = "BP under condition 2", xlim = c(70,107), ylim = c(70,107))
 
 # Plot cluster centres
-points(cl$centers, col = 1:2, pch = 8, cex = 2)
+points(cl$centers, col = c("red", "black", "black"), pch = 8, cex = 2)
 ```
 
 
