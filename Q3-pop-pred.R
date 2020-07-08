@@ -55,7 +55,7 @@ tau <- seq(0, 100, 0.0001)
 # Calling ODE function
 out <- ode(y = init, times = tau, func = pop, parms = para)
 
-# Plotting solution for u(tau)
+# Plotting solution for x(tau)
 plot(out, type = "l", xlab = "tau", ylab = "x(tau)")
 
 # Yes, there is a difference in the steady state values.

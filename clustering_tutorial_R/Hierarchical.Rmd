@@ -105,22 +105,26 @@ dist_tiss = dist(t(y)) # Transpose the matrix; finds distance measure on tissues
 
 ### Step 2b: Compute Similarity Matrix
 
-In case you don't have to compute the distance and instead need the similarity matrix, use the `cor()` function. The correlation matrix produced gives similarity measures. In the `method` parameter, specify which correlation coefficient must be calculated - pearson, kendall, or spearman. Kendall or Spearman are used if the input is ordered. If `method` is "kendall" or "spearman", Kendall's $\tau$ or Spearman's $\rho$ statistic is used to estimate a rank-based measure of association. These are more robust and have been recommended if the data do not necessarily come from a bivariate normal distribution. When there are ties, Kendall's $\tau_b$ is computed.
+In case you don't have to compute the distance and instead need the similarity matrix, use the `cor()` function. The correlation matrix produced gives similarity measures. In the `method` parameter, specify which correlation coefficient must be calculated - pearson, kendall, or spearman. **Kendall or Spearman** are used if the **input is ordinal**. If `method` is "kendall" or "spearman", Kendall's $\tau$ or Spearman's $\rho$ statistic is used to estimate a rank-based measure of association. These are more robust and have been recommended if the data do not necessarily come from a bivariate normal distribution. When there are ties, Kendall's $\tau_b$ is computed. **Pearson** is used for **numerical data** that follows a **linear** relationship with its components.
 
 
-We have chosen to use Spearman correlation coefficient in this example.
+We have chosen to use Spearman correlation coefficient since the input is not linearly distributed.
 
 
 ```{r}
 # For clustering genes - similarity matrix
 corr_genes <- cor(t(y), method = "spearman")
+
+# Similarity matrix using Pearson assuming the data is linear when it is not
+# corr_genes <- cor(t(y), method = "pearson")
+# sim_genes <- as.dist(sqrt(1-(corr_genes)^2))
+
 # Transposing y will create the correlation matrix of genes
-sim_genes <- as.dist(max(corr_genes) - corr_genes)
+sim_genes <- as.dist(1 - corr_genes) # similarity to distance
 
 # For clustering tissues - similarity matrix
 corr_tiss <- cor(y, method = "spearman")
-# Transposing y will create the correlation matrix of genes
-sim_tiss <- as.dist(max(corr_tiss) - corr_tiss)
+sim_tiss <- as.dist(1 - corr_tiss) # similarity to distance
 ```
 
 ### Step 3: Perform Hierarchical Clustering

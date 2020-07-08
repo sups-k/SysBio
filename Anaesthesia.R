@@ -83,5 +83,5 @@ plot(out2[,1], out2[,4], xlab = "Time in hours", ylab = "L(t) in mg", type = "l"
 
 Lt = max(out2[,4])
 
-abline(h = Lt, col = "cyan") # v for vertical line
+abline(h = Lt, col = "cyan") # h for horizontal line
 text(10,10, paste("Anaesthesia in mg = ", Lt))
