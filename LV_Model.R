@@ -115,3 +115,12 @@ print("Since 1 eigen value is positive and the other is negative and both are re
 lambdas <- eigen(jacobian.full(y = c(1,1), func = pp1, parms = para1))$values
 print(lambdas)
 print("Since both eigen value are imaginary, (1,1) is a centre")
+
+## Without using rootSolve
+# a11 = 1
+# a12 = 0
+# a21 = 0
+# a22 = -0.1
+# 
+# eigen1 = ((a11 + a22)/2) + sqrt( ( ((a11 + a22)^2) / 2) - (a11*a22 - a21*a12) + 0i)
+# eigen2 = ((a11 + a22)/2) - sqrt( ( ((a11 + a22)^2) / 2) - (a11*a22 - a21*a12) + 0i)
