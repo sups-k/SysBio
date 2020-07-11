@@ -82,7 +82,32 @@ lines(out4[,2], out4[,3])
 #Print summary
 print(out)
 
-# Part 2: Linearise and find eigen values at (0,0) and (1,1)
+# Part 2: Linearise and find eigen values at fixed points (0,0) and (1,1)
+
+# du/dt = u(1-v) = f
+# dv/dt = a*v*(u-1) = g
+
+# del f / del u = (1-v) = a11
+# del f / del v = -u = a12
+# del g / del u = a*v = a21
+# del g / del v = a*(u-1) = a22
+
+# For operating point (0,0):
+# a11 = 1-0 = 1
+# a12 = 0
+# a21 = 0
+# a22 = -a = -0.1
+# du'/dt = u'
+# dv'/dt = -0.1*v'
+
+# For operating point (1,1):
+# a11 = 1-1 = 0
+# a12 = -1
+# a21 = a = 0.1
+# a22 = 0
+# du'/dt = -v'
+# dv'/dt = 0.1*u'
+
 library(rootSolve)
 lambdas <- eigen(jacobian.full(y = c(0,0), func = pp1, parms = para1))$values
 print(lambdas)

@@ -56,6 +56,10 @@ Bt_all <- Bt_all[vals] # selects only those values of B(t) which are <= M(0)/2
 Bt = max(Bt_all)
 entry = out[out[,3]==Bt,]
 
+## Shortcut to above steps
+# B_amnt = max(out[which(out[,3] <= (init[1]/2)),3])
+# half_time = out[which(out[,3] == B_amnt),1]
+
 abline(v = entry[1], col = "cyan") # v for vertical line
 text(3,3, paste("Time = ", entry[1]))
 
