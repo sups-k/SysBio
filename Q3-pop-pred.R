@@ -13,13 +13,13 @@ plot(x, f1, type = "l", xlab = "x", ylab = "f(x)", ylim = c(-100, 100), col = "b
 lines(x, f2, col="red", ylim = c(-100, 6))
 lines(x, f3, col="green", ylim = c(-100,6))
 
-# Run this part only after plotting to know how many values are intersecting
-vals = f1 == f2 & f1 == f3 # logical vector
-f = f1 # contains all values of f1
-f <- f[vals] # selects only intersection of f1, f2, f3
-x_f <- x[vals] # selects only x values of intersection of f1, f2, f3
-
 #################### ALL WRONG BELOW ##### code is right ###############
+# # Run this part only after plotting to know how many values are intersecting
+# vals = f1 == f2 & f1 == f3 # logical vector
+# f = f1 # contains all values of f1
+# f <- f[vals] # selects only intersection of f1, f2, f3
+# x_f <- x[vals] # selects only x values of intersection of f1, f2, f3
+
 # # Mark the fixed points on the graph
 # 
 # # First Point
@@ -36,6 +36,7 @@ x_f <- x[vals] # selects only x values of intersection of f1, f2, f3
 # From the graph, we can see no fixed points because none of the functions
 # reach steady state. They all intersect at carrying capacity. To reach steady
 # state, the graph must be parallel to x-axis.
+# To find a fixed point, run the graph for many alphas.
 
 ## Part 2
 # Define model function with tau, initial values, parameter
